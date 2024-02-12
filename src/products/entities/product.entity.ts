@@ -40,7 +40,13 @@ export class Product {
     sizes: string[]
 
     @Column('text')
-    gender: string;
+    gender: string;4
+
+    @Column('text', {
+        default: [],
+        array: true,
+    })
+    tags: string[];
 
     //Transforma el slug antes de una inserción
     @BeforeInsert()
@@ -55,5 +61,16 @@ export class Product {
             .replaceAll("'",'')
     }
 
+        //Transforma el slug antes de una inserción
+        @BeforeUpdate()
+        checkSlugUpdate() {
+    
+            this.slug = this.slug
+                .toLowerCase()
+                .replaceAll(' ','_')
+                .replaceAll("'",'')
+        }
+
+        
     
 }
