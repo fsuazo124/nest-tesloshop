@@ -1,7 +1,7 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeRemove, BeforeUpdate, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { ProductImage } from "./product-image.entity"; 
 
-
-@Entity()
+@Entity({ name: 'products' })
 export class Product {
 
     @PrimaryGeneratedColumn('uuid')
@@ -40,13 +40,23 @@ export class Product {
     sizes: string[]
 
     @Column('text')
-    gender: string;4
+    gender: string;
 
     @Column('text', {
         default: [],
         array: true,
     })
     tags: string[];
+
+    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    createdAt: Date;
+
+    @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+    updatedAt: Date;
+
+    @OneToMany(() => ProductImage, (productImage) => productImage.product,
+    { cascade: true, eager: true })
+    images?: ProductImage[];
 
     //Transforma el slug antes de una inserción
     @BeforeInsert()
@@ -71,6 +81,5 @@ export class Product {
                 .replaceAll("'",'')
         }
 
-        
-    
+
 }
